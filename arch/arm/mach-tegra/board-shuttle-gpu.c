@@ -3,9 +3,6 @@
  *
  * Copyright (C) 2011 Eduardo José Tagle <ejtagle@tutopia.com>
  *
- * Authors:	Eduardo José Tagle 	<ejtagle@tutopia.com>
- * 		Rene Bensch "rebel1"	<rene.bensch@googlemail.com>
- *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
  * may be copied, distributed, and modified under those terms.
@@ -24,8 +21,6 @@
 #include <linux/resource.h>
 #include <linux/platform_device.h>
 #include <linux/pwm_backlight.h>
-#include <linux/kernel.h>
-#include <mach/tegra_cpufreq.h>
 #ifdef CONFIG_HAS_EARLYSUSPEND
 #include <linux/earlysuspend.h>
 #endif
@@ -36,6 +31,7 @@
 #include <mach/iomap.h>
 #include <mach/dc.h>
 #include <mach/fb.h>
+#include <mach/tegra_cpufreq.h>
 
 #include "board.h"
 #include "devices.h"
@@ -153,14 +149,11 @@ static int shuttle_hdmi_disable(void)
 	return 0;
 }
 
-#define TEGRA_ROUND_ALLOC(x) (((x) + 4095) & ((unsigned)(-4096)))
 
 #if defined(SHUTTLE_1280x800PANEL_1)
 /* Panel same as Motorola Xoom (tm) */
 
 /* Frame buffer size assuming 16bpp color */
-#define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(16/8)*SHUTTLE_FB_PAGES)
-
 static struct tegra_dc_mode shuttle_panel_modes[] = {
 	{
 		.pclk = 62200000,
@@ -188,7 +181,6 @@ static struct tegra_fb_data shuttle_fb_data = {
 /* If using 1280x800 panel (panel upgrade) */
 
 /* Frame buffer size assuming 16bpp color */
-#define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(16/8)*SHUTTLE_FB_PAGES)
 
 static struct tegra_dc_mode shuttle_panel_modes[] = {
 	{
@@ -216,7 +208,6 @@ static struct tegra_fb_data shuttle_fb_data = {
 #elif defined(SHUTTLE_1366x768PANEL)
 
 /* Frame buffer size assuming 16bpp color */
-#define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1368*768*(16/8)*SHUTTLE_FB_PAGES)
 
 static struct tegra_dc_mode shuttle_panel_modes[] = {
 	{
@@ -246,7 +237,6 @@ static struct tegra_fb_data shuttle_fb_data = {
 /* If using 1024x600 panel (Shuttle default panel) */
 
 /* Frame buffer size assuming 16bpp color */
-#define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
 
 static struct tegra_dc_mode shuttle_panel_modes[] = {
 	{
@@ -274,7 +264,6 @@ static struct tegra_fb_data shuttle_fb_data = {
 #else
 
 /* Frame buffer size assuming 16bpp color */
-#define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
 
 static struct tegra_dc_mode shuttle_panel_modes[] = {
 	{
@@ -303,25 +292,22 @@ static struct tegra_fb_data shuttle_fb_data = {
 
 #if defined(SHUTTLE_1920x1080HDMI)
 
-/* Frame buffer size assuming 16bpp color and 2 pages for page flipping */
-#define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1920*1080*(16/8)*2)
+/* Frame buffer size assuming 32bpp color and 2 pages for page flipping */
 
 static struct tegra_fb_data shuttle_hdmi_fb_data = {
 	.win		= 0,
 	.xres		= 1920,
 	.yres		= 1080,
-	.bits_per_pixel	= 16,
+	.bits_per_pixel	= 32,
 };
 
 #else
-
-#define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1280*720*(16/8)*2)
 
 static struct tegra_fb_data shuttle_hdmi_fb_data = {
 	.win		= 0,
 	.xres		= 1280,
 	.yres		= 720,
-	.bits_per_pixel	= 16,
+	.bits_per_pixel	= 32,
 };
 #endif
 
@@ -330,6 +316,7 @@ static struct tegra_dc_out shuttle_disp1_out = {
 
 	.align		= TEGRA_DC_ALIGN_MSB,
 	.order		= TEGRA_DC_ORDER_RED_BLUE,
+	.depth		= 18,
 	
 	 /* Enable dithering. Tegra also supports error
 		diffusion, but when the active region is less
@@ -356,8 +343,6 @@ static struct tegra_dc_out shuttle_hdmi_out = {
 	.align		= TEGRA_DC_ALIGN_MSB,
 	.order		= TEGRA_DC_ORDER_RED_BLUE,
 
-	.max_pixclock   = KHZ2PICOS(148500),
-	
 	.enable		= shuttle_hdmi_enable,
 	.disable	= shuttle_hdmi_disable,
 };
@@ -506,7 +491,6 @@ static void shuttle_panel_early_suspend(struct early_suspend *h)
 {
 	if (num_registered_fb > 0)
 		fb_blank(registered_fb[0], FB_BLANK_POWERDOWN);
-
 #ifdef CONFIG_CPU_FREQ
 	cpufreq_save_default_governor();
 	cpufreq_set_conservative_governor();

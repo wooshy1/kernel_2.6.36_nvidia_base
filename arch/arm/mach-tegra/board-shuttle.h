@@ -53,14 +53,22 @@
 
 #define SHUTTLE_MEM_SIZE 		SZ_512M			/* Total memory */
 
-/*#define SHUTTLE_GPU_MEM_SIZE 		SZ_128M*/	/* Memory reserved for GPU */
-/*#define SHUTTLE_GPU_MEM_SIZE 	SZ_64M*/			/* Memory reserved for GPU */
+/*#define SHUTTLE_GPU_MEM_SIZE 	SZ_128M*/		/* Memory reserved for GPU */
+/*#define SHUTTLE_GPU_MEM_SIZE 	SZ_64M*/		/* Memory reserved for GPU */
 #define SHUTTLE_GPU_MEM_SIZE 	(3*SZ_32M)		/* Memory reserved for GPU */
 
-#define SHUTTLE_FB1_MEM_SIZE 	SZ_8M			/* Memory reserved for Framebuffer 1: LCD */
-#define SHUTTLE_FB2_MEM_SIZE 	SZ_8M			/* Memory reserved for Framebuffer 2: HDMI out */
-
 #define DYNAMIC_GPU_MEM 1						/* use dynamic memory for GPU */
+
+/* LCD panel to use */
+/* #define SHUTTLE_1280x800PANEL_1 */
+/* #define SHUTTLE_1280x800PANEL_2 */
+/* #define SHUTTLE_1366x768PANEL */
+#define SHUTTLE_1024x600PANEL1 /* The P10AN01 default panel */
+/* #define SHUTTLE_1024x600PANEL2 */
+
+/* maximum allowed HDMI resolution */
+#define SHUTTLE_1920x1080HDMI
+/* #define SHUTTLE_1280x720HDMI */
 
 
 /*#define SHUTTLE_48KHZ_AUDIO*/ /* <- define this if you want 48khz audio sampling rate instead of 44100Hz */
@@ -144,6 +152,39 @@ extern int shuttle_gsm_pm_register_devices(void);
 extern int shuttle_bt_pm_register_devices(void);
 extern int shuttle_nand_register_devices(void);
 extern int shuttle_camera_pm_register_devices(void);
+
+
+/* Autocalculate framebuffer sizes */
+
+#define TEGRA_ROUND_ALLOC(x) (((x) + 4095) & ((unsigned)(-4096)))
+
+#if defined(SHUTTLE_1280x800PANEL_1)
+/* Panel same as Motorola Xoom (tm) */
+/* Frame buffer size assuming 16bpp color */
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(16/8)*SHUTTLE_FB_PAGES)
+#elif defined(SHUTTLE_1280x800PANEL_2)
+/* If using 1280x800 panel (panel upgrade) */
+/* Frame buffer size assuming 16bpp color */
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(16/8)*SHUTTLE_FB_PAGES)
+#elif defined(SHUTTLE_1366x768PANEL)
+/* Frame buffer size assuming 16bpp color */
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1368*768*(16/8)*SHUTTLE_FB_PAGES)
+#elif defined(SHUTTLE_1024x600PANEL1)
+/* If using 1024x600 panel (Shuttle default panel) */
+/* Frame buffer size assuming 16bpp color */
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
+#else
+/* Frame buffer size assuming 16bpp color */
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
+#endif
+
+#if defined(SHUTTLE_1920x1080HDMI)
+/* Frame buffer size assuming 32bpp color and 2 pages for page flipping */
+#	define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1920*1080*(32/8)*2)
+#else
+#	define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1280*720*(32/8)*2)
+#endif
+
 
 #endif
 

@@ -851,7 +851,7 @@ static void __init tegra_shuttle_reserve(void)
 
 #if defined(DYNAMIC_GPU_MEM)
 	/* Reserve the graphics memory */
-	tegra_reserve(SHUTTLE_GPU_MEM_SIZE, SHUTTLE_FB1_MEM_SIZE, SHUTTLE_FB2_MEM_SIZE);
+	tegra_reserve(SHUTTLE_GPU_MEM_SIZE, SHUTTLE_FB_SIZE, SHUTTLE_FB_HDMI_SIZE);
 #endif
 }
 
