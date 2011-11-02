@@ -316,7 +316,7 @@ static struct tegra_dc_out shuttle_disp1_out = {
 
 	.align		= TEGRA_DC_ALIGN_MSB,
 	.order		= TEGRA_DC_ORDER_RED_BLUE,
-	.depth		= 18,
+	.depth    	= 18,
 	
 	 /* Enable dithering. Tegra also supports error
 		diffusion, but when the active region is less
