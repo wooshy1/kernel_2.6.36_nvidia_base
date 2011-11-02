@@ -74,10 +74,16 @@ hub-less systems.
 #include "gpio-names.h"
 #include "devices.h"
 
-static char *usb_functions_acm_mtp_ums[] = { 
-#ifdef CONFIG_USB_ANDROID_ACM	
-	"acm", 
-#endif
+#define USB_MANUFACTURER_NAME		"NVIDIA"
+#define USB_PRODUCT_NAME			"Shuttle"
+#define USB_PRODUCT_ID_MTP_ADB		0x7100
+#define USB_PRODUCT_ID_MTP			0x7102
+#define USB_PRODUCT_ID_RNDIS		0x7103
+#define USB_PRODUCT_ID_ACM			0x7104
+#define USB_VENDOR_ID				0x0955
+
+
+static char *usb_functions_mtp_ums[] = { 
 #ifdef CONFIG_USB_ANDROID_MTP	
 	"mtp", 
 #endif
@@ -86,10 +92,7 @@ static char *usb_functions_acm_mtp_ums[] = {
 #endif
 };
 	
-static char *usb_functions_acm_mtp_adb_ums[] = { 
-#ifdef CONFIG_USB_ANDROID_ACM	
-	"acm", 
-#endif
+static char *usb_functions_mtp_adb_ums[] = { 
 #ifdef CONFIG_USB_ANDROID_MTP		
 	"mtp", 
 #endif
@@ -98,6 +101,51 @@ static char *usb_functions_acm_mtp_adb_ums[] = {
 #endif
 #ifdef CONFIG_USB_ANDROID_MASS_STORAGE	
 	"usb_mass_storage",
+#endif
+};
+
+static char *usb_functions_accessory[] = { 
+#ifdef CONFIG_USB_ANDROID_ACCESSORY
+	"accessory",
+#endif
+};
+	
+static char *usb_functions_accessory_adb[] = { 
+#ifdef CONFIG_USB_ANDROID_ACCESSORY
+	"accessory",
+#endif
+#ifdef CONFIG_USB_ANDROID_ADB
+	"adb", 
+#endif
+};
+
+static char *usb_functions_rndis[] = { 
+#ifdef CONFIG_USB_ANDROID_RNDIS
+	"rndis",
+#endif
+};
+	
+static char *usb_functions_rndis_adb[] = { 
+#ifdef CONFIG_USB_ANDROID_RNDIS
+	"rndis",
+#endif
+#ifdef CONFIG_USB_ANDROID_ADB
+	"adb", 
+#endif
+};
+
+static char *usb_functions_acm[] = { 
+#ifdef CONFIG_USB_ANDROID_ACM
+	"acm",
+#endif
+};
+	
+static char *usb_functions_acm_adb[] = { 
+#ifdef CONFIG_USB_ANDROID_ACM
+	"acm",
+#endif
+#ifdef CONFIG_USB_ANDROID_ADB
+	"adb", 
 #endif
 };
 
@@ -114,27 +162,81 @@ static char *tegra_android_functions_all[] = {
 #ifdef CONFIG_USB_ANDROID_MASS_STORAGE
 	"usb_mass_storage",
 #endif
+#ifdef CONFIG_USB_ANDROID_ACCESSORY
+	"accessory",
+#endif
+#ifdef CONFIG_USB_ANDROID_RNDIS
+	"rndis",
+#endif
 };
 
 static struct android_usb_product usb_products[] = {
+#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_ANDROID_MTP)
 	{
-		.product_id     = 0x7102,
-		.num_functions  = ARRAY_SIZE(usb_functions_acm_mtp_ums),
-		.functions      = usb_functions_acm_mtp_ums,
+		.product_id     = USB_PRODUCT_ID_MTP,
+		.num_functions  = ARRAY_SIZE(usb_functions_mtp_ums),
+		.functions      = usb_functions_mtp_ums,
 	},
 	{
-		.product_id     = 0x7100,
-		.num_functions  = ARRAY_SIZE(usb_functions_acm_mtp_adb_ums),
-		.functions      = usb_functions_acm_mtp_adb_ums,
+		.product_id     = USB_PRODUCT_ID_MTP_ADB,
+		.num_functions  = ARRAY_SIZE(usb_functions_mtp_adb_ums),
+		.functions      = usb_functions_mtp_adb_ums,
 	},
+#endif
+#ifdef CONFIG_USB_ANDROID_ACCESSORY
+	{
+		.vendor_id      = USB_ACCESSORY_VENDOR_ID,
+		.product_id     = USB_ACCESSORY_PRODUCT_ID,
+		.num_functions  = ARRAY_SIZE(usb_functions_accessory),
+		.functions      = usb_functions_accessory,
+	},
+	{
+		.vendor_id      = USB_ACCESSORY_VENDOR_ID,
+		.product_id     = USB_ACCESSORY_ADB_PRODUCT_ID,
+		.num_functions  = ARRAY_SIZE(usb_functions_accessory_adb),
+		.functions      = usb_functions_accessory_adb,
+	},
+#endif
+#ifdef CONFIG_USB_ANDROID_RNDIS
+	{
+		.product_id     = USB_PRODUCT_ID_RNDIS,
+		.num_functions  = ARRAY_SIZE(usb_functions_rndis),
+		.functions      = usb_functions_rndis,
+	},
+	{
+		.product_id     = USB_PRODUCT_ID_RNDIS,
+		.num_functions  = ARRAY_SIZE(usb_functions_rndis_adb),
+		.functions      = usb_functions_rndis_adb,
+	},
+#endif
+#ifdef CONFIG_USB_ANDROID_ACM
+	{
+		.product_id     = USB_PRODUCT_ID_ACM,
+		.num_functions  = ARRAY_SIZE(usb_functions_acm),
+		.functions      = usb_functions_acm,
+	},
+	{
+		.product_id     = USB_PRODUCT_ID_ACM,
+		.num_functions  = ARRAY_SIZE(usb_functions_acm_adb),
+		.functions      = usb_functions_acm_adb,
+	},
+#endif
 };
 
 /* standard android USB platform data */
 static struct android_usb_platform_data andusb_plat = {
-	.vendor_id 			= 0x0955,
-	.product_id 		= 0x7100,
-	.manufacturer_name 	= "NVIDIA",
-	.product_name      	= "Shuttle",
+	.vendor_id 			= USB_VENDOR_ID,
+#if defined(CONFIG_USB_ANDROID_MASS_STORAGE) || defined(CONFIG_USB_ANDROID_MTP)
+	.product_id 		= USB_PRODUCT_ID_MTP_ADB,
+#elif defined(CONFIG_USB_ANDROID_ACCESSORY)
+	.product_id     	= USB_ACCESSORY_PRODUCT_ID,
+#elif defined(CONFIG_USB_ANDROID_RNDIS)
+	.product_id 		= USB_PRODUCT_ID_RNDIS,
+#else
+	.product_id 		= USB_PRODUCT_ID_ACM,
+#endif
+	.manufacturer_name 	= USB_MANUFACTURER_NAME,
+	.product_name      	= USB_PRODUCT_NAME,
 	.serial_number     	= "0000",
 	.num_products 		= ARRAY_SIZE(usb_products),
 	.products 			= usb_products,
@@ -156,7 +258,7 @@ static struct platform_device tegra_usb_acm_device = {
 #endif
 
 #ifdef CONFIG_USB_ANDROID_MASS_STORAGE
-static struct usb_mass_storage_platform_data tegra_usb_ums_platform = {
+static struct usb_mass_storage_platform_data tegra_ums_platform = {
 	.vendor  = "NVIDIA",
 	.product = "Tegra 2",
 	.nluns 	 = 1,
@@ -165,10 +267,27 @@ static struct platform_device tegra_usb_ums_device = {
 	.name 	 = "usb_mass_storage",
 	.id 	 = -1,
 	.dev = {
-		.platform_data = &tegra_usb_ums_platform,
+		.platform_data = &tegra_ums_platform,
 	},
 };
 #endif
+
+#ifdef CONFIG_USB_ANDROID_RNDIS
+static struct usb_ether_platform_data tegra_rndis_pdata = {
+	.ethaddr 	 = {0x02, 0x04, 0x50, 0x60, 0x08, 0x10},
+	.vendorID 	 = USB_VENDOR_ID,
+	.vendorDescr = USB_MANUFACTURER_NAME,
+};
+
+static struct platform_device tegra_usb_rndis_device = {
+	.name   = "rndis",
+	.id     = -1,
+	.dev    = {
+		.platform_data  = &tegra_rndis_pdata,
+	},
+};
+#endif
+
 
 static struct platform_device androidusb_device = {
 	.name   = "android_usb",
@@ -327,6 +446,9 @@ static struct platform_device *shuttle_usb_devices[] __initdata = {
 #ifdef CONFIG_USB_ANDROID_MASS_STORAGE
 	&tegra_usb_ums_device,
 #endif
+#ifdef CONFIG_USB_ANDROID_RNDIS
+	&tegra_usb_rndis_device,
+#endif
 	&androidusb_device,		/* should come AFTER ums and acm */
 	&tegra_udc_device, 		/* USB gadget */
 	&tegra_ehci2_device,
@@ -447,3 +569,4 @@ int __init shuttle_usb_register_devices(void)
 	/* Attach an attribute to the already registered usbbus to let the user switch usb modes */
 	return sysfs_create_group(usb_kobj, &usb_attr_group); 
 }
+
