@@ -37,6 +37,7 @@
 
 #include <linux/vmstat.h>
 #include <linux/swap.h>
+#include <linux/pagemap.h>
 
 #include "nvmap.h"
 #include "nvmap_mru.h"
