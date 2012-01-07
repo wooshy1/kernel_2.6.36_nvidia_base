@@ -174,7 +174,7 @@ static struct tegra_fb_data shuttle_fb_data = {
 	.win		= 0,
 	.xres		= 1280,
 	.yres		= 800,
-	.bits_per_pixel	= 16, 
+	.bits_per_pixel = 32, 
 };
 
 #elif defined(SHUTTLE_1280x800PANEL_2)
@@ -202,7 +202,7 @@ static struct tegra_fb_data shuttle_fb_data = {
 	.win		= 0,
 	.xres		= 1280,
 	.yres		= 800,
-	.bits_per_pixel	= 16,
+	.bits_per_pixel = 32,
 };
 
 #elif defined(SHUTTLE_1366x768PANEL)
@@ -229,7 +229,7 @@ static struct tegra_fb_data shuttle_fb_data = {
 	.win		= 0,
 	.xres		= 1366,
 	.yres		= 768,
-	.bits_per_pixel	= 16,
+	.bits_per_pixel = 32,
 };
 
 #elif defined(SHUTTLE_1024x600PANEL1)
@@ -258,7 +258,7 @@ static struct tegra_fb_data shuttle_fb_data = {
 	.win		= 0,
 	.xres		= 1024,
 	.yres		= 600,
-	.bits_per_pixel	= 16,
+	.bits_per_pixel = 32,
 };
 
 #else
@@ -285,7 +285,7 @@ static struct tegra_fb_data shuttle_fb_data = {
 	.win		= 0,
 	.xres		= 1024,
 	.yres		= 600,
-	.bits_per_pixel	= 16,
+	.bits_per_pixel = 32,
 };
 
 #endif
@@ -298,7 +298,7 @@ static struct tegra_fb_data shuttle_hdmi_fb_data = {
 	.win		= 0,
 	.xres		= 1920,
 	.yres		= 1080,
-	.bits_per_pixel	= 32,
+	.bits_per_pixel = 32,
 };
 
 #else
@@ -307,7 +307,7 @@ static struct tegra_fb_data shuttle_hdmi_fb_data = {
 	.win		= 0,
 	.xres		= 1280,
 	.yres		= 720,
-	.bits_per_pixel	= 32,
+	.bits_per_pixel = 32,
 };
 #endif
 
