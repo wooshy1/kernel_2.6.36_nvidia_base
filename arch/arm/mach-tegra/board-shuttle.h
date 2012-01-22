@@ -53,12 +53,12 @@
 
 #define SHUTTLE_MEM_SIZE 		SZ_512M			/* Total memory */
 
-/*#define SHUTTLE_GPU_MEM_SIZE 	SZ_128M*/		/* Memory reserved for GPU */
+#define SHUTTLE_GPU_MEM_SIZE 	SZ_128M		/* Memory reserved for GPU */
 /*#define SHUTTLE_GPU_MEM_SIZE 	SZ_64M*/		/* Memory reserved for GPU */
-#define SHUTTLE_GPU_MEM_SIZE 	(128*SZ_2M)		/* Memory reserved for GPU */
+/*#define SHUTTLE_GPU_MEM_SIZE 	(128*SZ_2M)*/		/* Memory reserved for GPU */
 
-#define SHUTTLE_FB1_MEM_SIZE   SZ_8M      /* Memory reserved for Framebuffer 1: LCD */
-#define SHUTTLE_FB2_MEM_SIZE   SZ_8M      /* Memory reserved for Framebuffer 2: HDMI out */
+#define SHUTTLE_FB1_MEM_SIZE   SZ_4M      /* Memory reserved for Framebuffer 1: LCD */
+#define SHUTTLE_FB2_MEM_SIZE   SZ_4M      /* Memory reserved for Framebuffer 2: HDMI out */
 
 /* #define DYNAMIC_GPU_MEM 1 */						/* use dynamic memory for GPU */
 
@@ -164,28 +164,28 @@ extern int shuttle_camera_pm_register_devices(void);
 #if defined(SHUTTLE_1280x800PANEL_1)
 /* Panel same as Motorola Xoom (tm) */
 /* Frame buffer size assuming 16bpp color */
-#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(16/8)*SHUTTLE_FB_PAGES)
 #elif defined(SHUTTLE_1280x800PANEL_2)
 /* If using 1280x800 panel (panel upgrade) */
 /* Frame buffer size assuming 16bpp color */
-#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1280*800*(16/8)*SHUTTLE_FB_PAGES)
 #elif defined(SHUTTLE_1366x768PANEL)
 /* Frame buffer size assuming 16bpp color */
-#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1368*768*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1368*768*(16/8)*SHUTTLE_FB_PAGES)
 #elif defined(SHUTTLE_1024x600PANEL1)
 /* If using 1024x600 panel (Shuttle default panel) */
 /* Frame buffer size assuming 16bpp color */
-#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
 #else
 /* Frame buffer size assuming 16bpp color */
-#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
 #endif
 
 #if defined(SHUTTLE_1920x1080HDMI)
 /* Frame buffer size assuming 32bpp color and 2 pages for page flipping */
-#	define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1920*1080*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1920*1080*(16/8)*SHUTTLE_FB_PAGES)
 #else
-#	define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1280*720*(32/8)*SHUTTLE_FB_PAGES)
+#	define SHUTTLE_FB_HDMI_SIZE TEGRA_ROUND_ALLOC(1280*720*(16/8)*SHUTTLE_FB_PAGES)
 #endif
 
 
